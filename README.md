@@ -79,3 +79,6 @@ Run the skill against `http://127.0.0.1:8765/` (UI-only, or authorized-source wi
 | UI-only (third-party web app) | Real input only; 43 OBS / 26 FR / 19 T; 11 defects turned into corrected requirements |
 | Dual track (demo app, authorized-source) | All 9 answer-key behaviors found; the code track added duplicate-title check, silent 5-tag cap, full-width-comma splitting and the timestamp sort bug |
 | DESIGN.md (neutral + exact) | Neutral kept structure, swapped the brand palette and fixed two contrast failures; exact recorded tokens as-is; 5 visual defects found |
+
+## License
+MIT — see [LICENSE](LICENSE). Use the skill only on software you are allowed to analyze; it is designed for black-box, clean-room analysis and never copies the original's code or branding.
