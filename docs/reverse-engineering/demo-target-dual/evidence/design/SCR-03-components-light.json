@@ -1,0 +1,94 @@
+{
+ "dialog": {
+  "w": 332,
+  "h": 386,
+  "color": "rgb(17, 17, 17)",
+  "bg": "rgb(255, 255, 255)",
+  "border": "0px none rgb(17, 17, 17)",
+  "radius": "10px",
+  "font": "system-ui 16px/normal 400",
+  "padding": "16px",
+  "margin": "207.031px 474px",
+  "shadow": "none",
+  "maxW": "calc(100% - 38px)",
+  "width": "300px"
+ },
+ "backdrop": {
+  "bg": "rgba(0, 0, 0, 0.1)"
+ },
+ "heading": {
+  "w": 300,
+  "h": 27,
+  "color": "rgb(17, 17, 17)",
+  "bg": "rgba(0, 0, 0, 0)",
+  "border": "0px none rgb(17, 17, 17)",
+  "radius": "0px",
+  "font": "system-ui 18.72px/normal 700",
+  "padding": "0px",
+  "margin": "18.72px 0px",
+  "shadow": "none",
+  "maxW": "none",
+  "width": "300px"
+ },
+ "titleInput": {
+  "w": 300,
+  "h": 35,
+  "color": "rgb(0, 0, 0)",
+  "bg": "rgb(255, 255, 255)",
+  "border": "2px inset rgb(118, 118, 118)",
+  "radius": "0px",
+  "font": "system-ui 16px/normal 400",
+  "padding": "6px",
+  "margin": "0px",
+  "shadow": "none",
+  "maxW": "none",
+  "width": "300px"
+ },
+ "bodyTextarea": {
+  "w": 300,
+  "h": 90,
+  "color": "rgb(0, 0, 0)",
+  "bg": "rgb(255, 255, 255)",
+  "border": "1px solid rgb(118, 118, 118)",
+  "radius": "0px",
+  "font": "system-ui 16px/normal 400",
+  "padding": "6px",
+  "margin": "0px",
+  "shadow": "none",
+  "maxW": "none",
+  "width": "300px"
+ },
+ "errorText": {
+  "color": "rgb(220, 38, 38)",
+  "font": "system-ui 12px 400",
+  "minHeight": "16px (space reserved)"
+ },
+ "cancelButton": {
+  "w": 49,
+  "h": 33,
+  "color": "rgb(17, 17, 17)",
+  "bg": "rgb(244, 244, 245)",
+  "border": "1px solid rgb(204, 204, 204)",
+  "radius": "6px",
+  "font": "Arial 13.3333px/normal 400",
+  "padding": "6px 10px",
+  "margin": "0px",
+  "shadow": "none",
+  "maxW": "none",
+  "width": "48.6641px"
+ },
+ "saveButton": {
+  "w": 49,
+  "h": 33,
+  "color": "rgb(255, 255, 255)",
+  "bg": "rgb(37, 99, 235)",
+  "border": "1px solid rgb(37, 99, 235)",
+  "radius": "6px",
+  "font": "Arial 13.3333px/normal 400",
+  "padding": "6px 10px",
+  "margin": "0px",
+  "shadow": "none",
+  "maxW": "none",
+  "width": "48.6641px"
+ }
+}

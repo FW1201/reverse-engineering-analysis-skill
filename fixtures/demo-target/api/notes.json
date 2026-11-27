@@ -1,0 +1,5 @@
+{"notes":[
+ {"id":"n1","title":"採購會議","body":"確認 Q1 預算","tags":["work"],"pinned":true,"updatedAt":"2026-11-20T09:00:00+08:00"},
+ {"id":"n2","title":"牛奶","body":"低脂 2 瓶","tags":["home"],"pinned":false,"updatedAt":"2026-11-21T18:30:00+08:00"},
+ {"id":"n3","title":"讀書會","body":"第 3 章 構式語法","tags":["study","work"],"pinned":false,"updatedAt":"2026-11-22T20:15:00+08:00"}
+]}

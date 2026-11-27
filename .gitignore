@@ -1,0 +1,10 @@
+.DS_Store
+__pycache__/
+*.pyc
+
+# Real-target analyses stay local (may contain screenshots of private systems).
+docs/reverse-engineering/*
+!docs/reverse-engineering/demo-target-dual/
+
+# Rebuilt apps live in their own repos.
+apps/

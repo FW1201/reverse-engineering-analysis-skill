@@ -1,0 +1,1 @@
+{"key":"pocketnote.v1","shape":{"notes":[{"id":"string","title":"string","body":"string","tags":["string"],"pinned":"boolean","updatedAt":"ISO-8601 with +08:00 offset"}],"settings":{"dark":"boolean","sort":"'updated'"}},"initial_note_count":3}

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PocketNote</title>
+<style>
+:root{--bg:#fff;--fg:#111;--muted:#666;--card:#f4f4f5;--accent:#2563eb;--danger:#dc2626}
+body.dark{--bg:#111;--fg:#eee;--muted:#aaa;--card:#222}
+body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--fg)}
+header{display:flex;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid #ddd}
+header h1{font-size:18px;margin:0 auto 0 0}
+nav button,.btn{border:1px solid #ccc;background:var(--card);color:var(--fg);padding:6px 10px;border-radius:6px;cursor:pointer}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.danger{background:var(--danger);color:#fff;border-color:var(--danger)}
+main{padding:16px;max-width:720px;margin:auto}
+.toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.note{background:var(--card);border-radius:8px;padding:10px 12px;margin-bottom:8px;position:relative}
+.note h3{margin:0 0 4px;font-size:16px}.note .meta{color:var(--muted);font-size:12px}
+.tag{display:inline-block;font-size:11px;padding:1px 6px;border-radius:10px;background:#dbeafe;color:#1e3a8a;margin-right:4px}
+.note .actions{position:absolute;right:8px;top:8px;display:flex;gap:4px}
+dialog{border:none;border-radius:10px;padding:16px;min-width:300px;background:var(--bg);color:var(--fg)}
+.err{color:var(--danger);font-size:12px;min-height:16px}
+.empty{color:var(--muted);text-align:center;padding:40px}
+label{display:block;margin:8px 0 2px;font-size:13px}
+input,textarea,select{width:100%;box-sizing:border-box;padding:6px;font:inherit}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:8px 14px;border-radius:6px;display:none}
+</style></head>
+<body>
+<header><h1>PocketNote</h1>
+<nav><button id="nav-notes" aria-current="page">筆記</button><button id="nav-settings">設定</button></nav></header>
+<main>
+<section id="view-notes">
+ <div class="toolbar">
+  <input id="search" placeholder="搜尋標題或內容" aria-label="搜尋">
+  <select id="tag-filter" aria-label="標籤篩選"><option value="">全部標籤</option></select>
+  <button class="btn primary" id="new-note">＋ 新增筆記</button>
+ </div>
+ <div id="list"></div>
+</section>
+<section id="view-settings" hidden>
+ <h2>設定</h2>
+ <label><input type="checkbox" id="dark" style="width:auto"> 深色模式</label>
+ <label for="sort">排序</label>
+ <select id="sort"><option value="updated">最近更新</option><option value="title">標題 A→Z</option></select>
+ <p><button class="btn danger" id="reset">清除所有資料</button></p>
+</section>
+</main>
+<dialog id="editor"><form method="dialog" id="editor-form">
+ <h3 id="editor-title">新增筆記</h3>
+ <label for="f-title">標題（必填，最多 40 字）</label><input id="f-title" maxlength="40">
+ <label for="f-body">內容</label><textarea id="f-body" rows="4"></textarea>
+ <label for="f-tags">標籤（逗號分隔）</label><input id="f-tags">
+ <div class="err" id="f-err"></div>
+ <div style="display:flex;gap:8px;justify-content:flex-end">
+  <button class="btn" value="cancel" id="f-cancel">取消</button>
+  <button class="btn primary" id="f-save" value="default">儲存</button></div>
+</form></dialog>
+<dialog id="confirm"><p id="confirm-msg"></p>
+ <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="c-no">取消</button><button class="btn danger" id="c-yes">確定刪除</button></div></dialog>
+<div id="toast" role="status"></div>
+<script>
+const KEY='pocketnote.v1';
+let state={notes:[],settings:{dark:false,sort:'updated'}},editingId=null;
+const $=s=>document.querySelector(s);
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2000)}
+async function load(){
+ const raw=localStorage.getItem(KEY);
+ if(raw){state=JSON.parse(raw)}else{const r=await fetch('api/notes.json');const d=await r.json();state.notes=d.notes;save()}
+ applySettings();render();
+}
+function applySettings(){document.body.classList.toggle('dark',state.settings.dark);$('#dark').checked=state.settings.dark;$('#sort').value=state.settings.sort}
+function render(){
+ const q=$('#search').value.trim().toLowerCase(),tag=$('#tag-filter').value;
+ const tags=[...new Set(state.notes.flatMap(n=>n.tags))].sort();
+ const sel=$('#tag-filter');const cur=sel.value;sel.innerHTML='<option value="">全部標籤</option>'+tags.map(t=>`<option ${t===cur?'selected':''}>${t}</option>`).join('');
+ let ns=state.notes.filter(n=>(!q||(n.title+n.body).toLowerCase().includes(q))&&(!tag||n.tags.includes(tag)));
+ ns.sort((a,b)=>(b.pinned-a.pinned)||(state.settings.sort==='title'?a.title.localeCompare(b.title,'zh-Hant'):b.updatedAt.localeCompare(a.updatedAt)));
+ $('#list').innerHTML=ns.length?ns.map(n=>`<article class="note" data-id="${n.id}"><div class="actions">
+  <button class="btn" data-act="pin" title="${n.pinned?'取消釘選':'釘選'}">${n.pinned?'📌':'📍'}</button>
+  <button class="btn" data-act="edit">編輯</button><button class="btn" data-act="del">刪除</button></div>
+  <h3>${esc(n.title)}</h3><div>${esc(n.body)}</div><div class="meta">${n.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')} · ${new Date(n.updatedAt).toLocaleString('zh-TW')}</div></article>`).join('')
+  :`<div class="empty">${q||tag?'找不到符合的筆記':'還沒有筆記，按「新增筆記」開始'}</div>`;
+}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function openEditor(n){editingId=n?n.id:null;$('#editor-title').textContent=n?'編輯筆記':'新增筆記';$('#f-title').value=n?n.title:'';$('#f-body').value=n?n.body:'';$('#f-tags').value=n?n.tags.join(', '):'';$('#f-err').textContent='';$('#editor').showModal()}
+$('#new-note').onclick=()=>openEditor(null);
+$('#f-save').onclick=e=>{const title=$('#f-title').value.trim();if(!title){e.preventDefault();$('#f-err').textContent='標題不可空白';return}
+ if(state.notes.some(n=>n.title===title&&n.id!==editingId)){e.preventDefault();$('#f-err').textContent='已有相同標題的筆記';return}
+ const tags=[...new Set($('#f-tags').value.split(/[,，]/).map(s=>s.trim().toLowerCase()).filter(Boolean))].slice(0,5);
+ const now=new Date().toISOString();
+ if(editingId){Object.assign(state.notes.find(n=>n.id===editingId),{title,body:$('#f-body').value,tags,updatedAt:now});toast('已更新')}
+ else{state.notes.push({id:'n'+Date.now(),title,body:$('#f-body').value,tags,pinned:false,updatedAt:now});toast('已新增')}
+ save();render()};
+$('#list').onclick=e=>{const b=e.target.closest('button');if(!b)return;const id=b.closest('.note').dataset.id,n=state.notes.find(x=>x.id===id);
+ if(b.dataset.act==='edit')openEditor(n);
+ if(b.dataset.act==='pin'){n.pinned=!n.pinned;save();render()}
+ if(b.dataset.act==='del'){$('#confirm-msg').textContent=`確定刪除「${n.title}」？此動作無法復原。`;$('#confirm').showModal();$('#c-yes').onclick=()=>{state.notes=state.notes.filter(x=>x.id!==id);save();render();$('#confirm').close();toast('已刪除')}}};
+$('#c-no').onclick=()=>$('#confirm').close();
+$('#search').oninput=render;$('#tag-filter').onchange=render;
+function show(v){$('#view-notes').hidden=v!=='notes';$('#view-settings').hidden=v!=='settings';$('#nav-notes').toggleAttribute('aria-current',v==='notes');$('#nav-settings').toggleAttribute('aria-current',v==='settings');location.hash=v}
+$('#nav-notes').onclick=()=>show('notes');$('#nav-settings').onclick=()=>show('settings');
+$('#dark').onchange=e=>{state.settings.dark=e.target.checked;save();applySettings()};
+$('#sort').onchange=e=>{state.settings.sort=e.target.value;save();render()};
+$('#reset').onclick=()=>{if(confirm('清除所有資料並還原範例？')){localStorage.removeItem(KEY);location.reload()}};
+show(location.hash==='#settings'?'settings':'notes');load();
+</script></body></html>

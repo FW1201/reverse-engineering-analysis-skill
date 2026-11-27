@@ -1,0 +1,28 @@
+../docs/reverse-engineering/demo-target-dual/evidence/screens/OBS-050.png: 1280x800, sampled every 1px
+share   color    luminance
+ 97.6%  #FDFDFD  0.982
+  0.5%  #E8E8E9  0.808
+  0.4%  #767676  0.181
+  0.2%  #2563EB  0.153
+  0.2%  #121212  0.006
+  0.2%  #DAE9FD  0.803
+  0.1%  #C9C9C9  0.584
+  0.1%  #D7D7D7  0.680
+../docs/reverse-engineering/demo-target-dual/evidence/screens/OBS-055.png: 1280x800, sampled every 1px
+share   color    luminance
+ 76.2%  #111111  0.006
+ 16.9%  #222222  0.016
+  4.5%  #FEFEFE  0.991
+  0.8%  #767676  0.181
+  0.3%  #EBEBEB  0.831
+  0.2%  #2563EA  0.153
+  0.2%  #DAE9FD  0.803
+  0.1%  #A7A7A7  0.386
+#FFFFFF on #2563EB: 5.17:1  AA-text pass  AA-large pass
+#666666 on #F4F4F5: 5.22:1  AA-text pass  AA-large pass
+#AAAAAA on #222222: 6.85:1  AA-text pass  AA-large pass
+#FFFFFF on #DC2626: 4.83:1  AA-text pass  AA-large pass
+#1E3A8A on #DBEAFE: 8.49:1  AA-text pass  AA-large pass
+#EEEEEE on #222222: 13.71:1  AA-text pass  AA-large pass
+#DC2626 on #FFFFFF: 4.83:1  AA-text pass  AA-large pass
+#111111 on #111111: 1.00:1  AA-text fail  AA-large fail
